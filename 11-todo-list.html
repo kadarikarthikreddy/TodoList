@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .display{
+      display: grid;
+      grid-template-columns: 150px 100px 100px;
+      margin-top: 10px;
+      font-weight:bold;
+      row-gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <p>Todo List</p>
+  <input type="text" placeholder="Todo name" class="js-input" onkeydown="if(event.key==='Shift'){ todoList(); }">
+  <input type="date" class="js-date">
+  <button onclick="todoList();">Add</button>
+  <div class="js-display display"></div>
+  <script>
+    const arrayList=JSON.parse(localStorage.getItem('arrayList')) || [ ];
+    addTodo();
+    function addTodo(){
+      let todoListHTML=' ';
+      arrayList.forEach(function(todoObject,index){
+        const name=todoObject.name;
+        const date=todoObject.date;
+        const html=`<div>${name}</div> <div>${date}</div>
+          <button class="js-delete">Delete</button>
+          `;
+        todoListHTML+=html;
+      });
+      document.querySelector('.js-display').innerHTML=todoListHTML;
+
+      document.querySelectorAll('.js-delete').
+      forEach((delBtn,index)=>{
+        delBtn.addEventListener('click',()=>{
+          arrayList.splice(index,1);
+          addTodo(); 
+          storage();
+        })
+      });
+  };
+
+    function todoList(){
+      let inputElement=document.querySelector('.js-input');
+      let name=inputElement.value;
+      let dateElement=document.querySelector('.js-date');
+      let date=dateElement.value;
+      arrayList.push({
+        name:name,
+        date:date,
+      });
+      console.log(arrayList);
+      inputElement.value='';
+      addTodo();
+      storage();
+    }
+    function storage(){
+      localStorage.setItem('arrayList',JSON.stringify(arrayList));
+    }
+  </script>
+</body>
+</html>
